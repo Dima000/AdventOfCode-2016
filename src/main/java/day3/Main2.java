@@ -5,7 +5,7 @@ import ulit.ReadFile;
 public class Main2 {
 
 	public static void main(final String[] args) {
-		final String input = ReadFile.readFromFile("src/main/resources/input3.txt");
+		final String input = ReadFile.readFromFile("src/main/resources/test1.txt");
 		final String[] triangles = input.split("\n");
 		int count = 0;
 

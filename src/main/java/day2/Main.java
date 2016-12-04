@@ -8,7 +8,7 @@ import ulit.ReadFile;
 public class Main {
 
 	public static void main(final String[] args) {
-		final String input = ReadFile.readFromFile("src/main/resources/input21.txt");
+		final String input = ReadFile.readFromFile("src/main/resources/input2.txt");
 		final String[] instructuions = input.split("\n");
 
 		final List<String> code = new ArrayList<>();
