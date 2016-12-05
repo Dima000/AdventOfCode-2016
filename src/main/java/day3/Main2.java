@@ -1,12 +1,11 @@
 package day3;
 
-import util.ReadFile;
+import util.Reader;
 
 public class Main2 {
 
 	public static void main(final String[] args) {
-		final String input = ReadFile.readFromFile("src/main/resources/test.txt");
-		final String[] triangles = input.split("\n");
+		final String[] triangles = Reader.readLines("input3.txt");
 		int count = 0;
 
 		for (int i = 0; i < triangles.length; i += 3) {

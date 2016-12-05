@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import util.ReadFile;
+import util.Reader;
 
 public class Main {
 	static List<String> states = Arrays.asList("N", "E", "S", "V");
@@ -17,7 +17,7 @@ public class Main {
 	static Point2D auxPoint = new Point(0, 0);
 
 	public static void main(final String[] args) {
-		final String pathString = ReadFile.readFromFile("src/main/resources/input12.txt");
+		final String pathString = Reader.readFile("input12.txt");
 		final String[] path = pathString.split(",");
 		int x = 0;
 		int y = 0;
@@ -29,18 +29,18 @@ public class Main {
 			final String direction = turn.equals("R") ? dir.nextState() : dir.previousState();
 
 			switch (direction) {
-			case "N":
-				y += stepsNr;
-				break;
-			case "E":
-				x += stepsNr;
-				break;
-			case "S":
-				y -= stepsNr;
-				break;
-			case "V":
-				x -= stepsNr;
-				break;
+				case "N":
+					y += stepsNr;
+					break;
+				case "E":
+					x += stepsNr;
+					break;
+				case "S":
+					y -= stepsNr;
+					break;
+				case "V":
+					x -= stepsNr;
+					break;
 			}
 
 			createLine(new Point2D.Float(x, y));
@@ -57,7 +57,7 @@ public class Main {
 			for (int j = 0; j < lines.size(); j++) {
 				final Line2D line1 = lines.get(i);
 
-				if((j > i+1 || j < i-1) && line1.intersectsLine(lines.get(j))) {
+				if ((j > i + 1 || j < i - 1) && line1.intersectsLine(lines.get(j))) {
 					final Line2D line2 = lines.get(j);
 					final double x = Objects.equals(line1.getX1(), line1.getX2()) ? line1.getX1() : line2.getX1();
 					final double y = Objects.equals(line1.getY1(), line1.getY2()) ? line1.getY1() : line2.getY1();

@@ -9,34 +9,33 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import util.ReadFile;
+import util.Reader;
 
 public class Main {
 
 	public static void main(final String[] args) {
-		final String input = ReadFile.readFromFile("src/main/resources/input4.txt");
-		final String[] lines = input.split("\n");
+		final String[] lines = Reader.readLines("input4.txt");
 		int sectorIdSum = 0;
 
 		for (final String line : lines) {
 			final String[] sectors = line.split("-");
 			boolean isValid = true;
 
-			final Map<String, Pair<String,Integer>> lettersCountMap = countLetters(sectors);
-			final List<Pair<String,Integer>> lettersCount = new ArrayList<>(lettersCountMap.values());
+			final Map<String, Pair<String, Integer>> lettersCountMap = countLetters(sectors);
+			final List<Pair<String, Integer>> lettersCount = new ArrayList<>(lettersCountMap.values());
 			Collections.sort(lettersCount, new LettersComparator());
 
-			final Pair<String,Integer> controlFields = getControlFields(sectors[sectors.length-1].trim());
+			final Pair<String, Integer> controlFields = getControlFields(sectors[sectors.length - 1].trim());
 
-			for(int i=0;i<5;i++) {
+			for (int i = 0; i < 5; i++) {
 				final String checkSumLetter = Character.toString(controlFields.getKey().charAt(i));
 				final String sortedArrayLetter = lettersCount.get(i).getKey();
 				final boolean sameLetter = Objects.equals(checkSumLetter, sortedArrayLetter);
 				isValid = isValid && sameLetter;
 			}
 
-			if(isValid) {
-				sectorIdSum+=controlFields.getValue();
+			if (isValid) {
+				sectorIdSum += controlFields.getValue();
 			}
 		}
 
@@ -45,14 +44,14 @@ public class Main {
 
 	public static Pair<String, Integer> getControlFields(final String lastSector) {
 		final int length = lastSector.length();
-		final String checkSum = lastSector.substring(length-6, length-1);
-		final String sectorId = lastSector.substring(0, length-7);
+		final String checkSum = lastSector.substring(length - 6, length - 1);
+		final String sectorId = lastSector.substring(0, length - 7);
 
 		return Pair.of(checkSum, Integer.parseInt(sectorId));
 	}
 
-	private static Map<String, Pair<String,Integer>> countLetters(final String[] sectors) {
-		final Map<String, Pair<String,Integer>> letters = new HashMap<>();
+	private static Map<String, Pair<String, Integer>> countLetters(final String[] sectors) {
+		final Map<String, Pair<String, Integer>> letters = new HashMap<>();
 		for (int i = 0; i < sectors.length - 1; i++) {
 
 			final String sector = sectors[i];

@@ -9,7 +9,7 @@ public class Main {
 
 	public static void main(final String[] args) {
 
-		for (int i=0; password.length() < 8; i++) {
+		for (int i = 0; password.length() < 8; i++) {
 			String md5Hash = DigestUtils.md5Hex(PUZZLE_INPUT + i);
 
 			if (isValid(md5Hash)) {

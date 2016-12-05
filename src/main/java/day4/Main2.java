@@ -1,12 +1,11 @@
 package day4;
 
-import util.ReadFile;
+import util.Reader;
 
 public class Main2 {
 
 	public static void main(final String[] args) {
-		final String input = ReadFile.readFromFile("src/main/resources/input4.txt");
-		final String[] lines = input.split("\n");
+		final String[] lines = Reader.readLines("input4.txt");
 
 		for (final String line : lines) {
 			final String[] sectors = line.split("-");
@@ -19,17 +18,17 @@ public class Main2 {
 					str.append(decodeLetter(sectors[i].charAt(j), sectorId));
 				}
 
-				if(i!= sectors.length - 2)str.append(decodeSpace(sectorId));
+				if (i != sectors.length - 2) {
+					str.append(decodeSpace(sectorId));
+				}
 			}
 
 			final String decriptedName = str.toString();
-			if(decriptedName.contains("north") || decriptedName.contains("pole")) {
+			if (decriptedName.contains("north") || decriptedName.contains("pole")) {
 				System.out.println("Name: " + decriptedName + " Sum: " + sectorId);
 			}
 
 		}
-
-
 
 	}
 
