@@ -1,6 +1,6 @@
 package day4;
 
-import ulit.ReadFile;
+import util.ReadFile;
 
 public class Main2 {
 

@@ -3,7 +3,7 @@ package day2;
 import java.util.ArrayList;
 import java.util.List;
 
-import ulit.ReadFile;
+import util.ReadFile;
 
 public class Main {
 

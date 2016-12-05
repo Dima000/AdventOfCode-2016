@@ -13,7 +13,7 @@ public class Main2 {
 	public static void main(final String[] args) {
 		int size = 0;
 
-		for (int i = 0; i < Integer.MAX_VALUE; i++) {
+		for (int i = 0; password.size() < 8; i++) {
 			String md5Hash = DigestUtils.md5Hex(PUZZLE_INPUT + i);
 
 			if (Main.isValid(md5Hash)) {
@@ -23,10 +23,6 @@ public class Main2 {
 				if (pos >= 0 && pos <= 7 && password.get(pos) == null) {
 					password.put(pos, passwordChar);
 				}
-			}
-
-			if (password.size() >= 8) {
-				break;
 			}
 
 			//optional code

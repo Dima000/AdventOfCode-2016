@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import ulit.ReadFile;
+import util.ReadFile;
 
 public class Main {
 	static List<String> states = Arrays.asList("N", "E", "S", "V");
