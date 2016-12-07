@@ -11,12 +11,11 @@ public class Reader {
 
 	public static String readFile(final String fileName) {
 		try (FileInputStream inputStream = new FileInputStream(PATH + fileName)) {
-			// Session IOUtils;
 			final String everything = IOUtils.toString(inputStream);
 			return everything;
 		} catch (final IOException e) {
 			e.printStackTrace();
-			return "";
+			return null;
 		}
 	}
 
