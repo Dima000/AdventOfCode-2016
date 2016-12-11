@@ -9,12 +9,12 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import util.Reader;
+import util.ReaderLocal;
 
 public class Main {
 
 	public static void main(final String[] args) {
-		final String[] lines = Reader.readLines("input4.txt");
+		final String[] lines = ReaderLocal.readLines("input4.txt");
 		int sectorIdSum = 0;
 
 		for (final String line : lines) {

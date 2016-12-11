@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import org.apache.commons.io.IOUtils;
 
-public class Reader {
+public class ReaderLocal {
 
 	private static final String PATH = "src/main/resources/";
 

@@ -1,11 +1,11 @@
 package day4;
 
-import util.Reader;
+import util.ReaderLocal;
 
 public class Main2 {
 
 	public static void main(final String[] args) {
-		final String[] lines = Reader.readLines("input4.txt");
+		final String[] lines = ReaderLocal.readLines("input4.txt");
 
 		for (final String line : lines) {
 			final String[] sectors = line.split("-");

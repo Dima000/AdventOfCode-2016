@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import util.Reader;
+import util.ReaderLocal;
 
 public class Main {
 	static List<String> states = Arrays.asList("N", "E", "S", "V");
@@ -17,7 +17,7 @@ public class Main {
 	static Point2D auxPoint = new Point(0, 0);
 
 	public static void main(final String[] args) {
-		final String pathString = Reader.readFile("input12.txt");
+		final String pathString = ReaderLocal.readFile("input12.txt");
 		final String[] path = pathString.split(",");
 		int x = 0;
 		int y = 0;

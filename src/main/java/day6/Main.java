@@ -4,14 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-import util.Reader;
+import util.ReaderLocal;
 
 public class Main {
 
 	public static final Map<Integer, Map<Character, Integer>> result = new TreeMap<>();
 
 	public static void main(final String[] args) {
-		String[] lines = Reader.readLines("input6.txt");
+		String[] lines = ReaderLocal.readLines("input6.txt");
 		initMaps(lines[0].length());
 
 		for (String line : lines) {

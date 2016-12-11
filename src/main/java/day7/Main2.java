@@ -5,12 +5,12 @@ import java.util.regex.Matcher;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import util.Reader;
+import util.ReaderLocal;
 
 public class Main2 {
 
 	public static void main(final String[] args) {
-		final String[] lines = Reader.readLines("input7.txt");
+		final String[] lines = ReaderLocal.readLines("input7.txt");
 		int counter = 0;
 
 		for (String line : lines) {
