@@ -15,9 +15,10 @@ public class Main {
 	static CircularLinkedList<String> dir = new CircularLinkedList<>(states, 0);
 	static List<Line2D> lines = new ArrayList<>();
 	static Point2D auxPoint = new Point(0, 0);
+	static int count = 0;
 
 	public static void main(final String[] args) {
-		final String pathString = ReaderLocal.readFile("input12.txt");
+		final String pathString = ReaderLocal.readFile("test.txt");
 		final String[] path = pathString.split(",");
 		int x = 0;
 		int y = 0;
@@ -29,24 +30,26 @@ public class Main {
 			final String direction = turn.equals("R") ? dir.nextState() : dir.previousState();
 
 			switch (direction) {
-				case "N":
-					y += stepsNr;
-					break;
-				case "E":
-					x += stepsNr;
-					break;
-				case "S":
-					y -= stepsNr;
-					break;
-				case "V":
-					x -= stepsNr;
-					break;
+			case "N":
+				y += stepsNr;
+				break;
+			case "E":
+				x += stepsNr;
+				break;
+			case "S":
+				y -= stepsNr;
+				break;
+			case "V":
+				x -= stepsNr;
+				break;
 			}
 
 			createLine(new Point2D.Float(x, y));
-			printIfIntersection();
+			//printIfIntersection();
+			count++;
 		}
 
+		printIfIntersection();
 		printSum(x, y);
 
 	}
@@ -61,7 +64,7 @@ public class Main {
 					final Line2D line2 = lines.get(j);
 					final double x = Objects.equals(line1.getX1(), line1.getX2()) ? line1.getX1() : line2.getX1();
 					final double y = Objects.equals(line1.getY1(), line1.getY2()) ? line1.getY1() : line2.getY1();
-					System.out.println("short " + (int) (Math.abs(x) + Math.abs(y)));
+					System.out.println("x:"+(int)x+ " y:" + (int)y + " sum:" + (int) (Math.abs(x) + Math.abs(y)));
 				}
 			}
 		}
