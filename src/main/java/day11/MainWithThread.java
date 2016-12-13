@@ -7,30 +7,31 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class MainWithThread {
 
-	static int WIDTH = 8;
+	
 	static int HEIGHT = 4;
+	static byte PAIRS = 2;
+	static int WIDTH = PAIRS * 2;
 
 	static byte NONE = -100;
 	static byte UP = 1;
 	static byte DOWN = -1;
-	static byte IS_CHIP = 1;
 
 	static byte THREAD_POOL = 7;
-	static byte MAX_MOVES = 16;
+	static byte MAX_MOVES = 12;
 
 	static AtomicInteger minSolution = new AtomicInteger(Integer.MAX_VALUE);
 
-	final static byte[][] GRID = new byte[][] {
-		{ 1, 0, 0, 0, 10, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 20, 30, 40 },
-		{ 0, 2, 3, 4, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0, 0, 0 } };
-
-//	final static byte[][] GRID = new byte[][] {
-//			{ 1, 2, 0, 0 },
-//			{ 0, 0, 20, 0 },
-//			{ 0, 0, 0, 10 },
-//			{ 0, 0, 0, 0 } };
+	final static String state10 = "0222201111";
+//		{ 1, 0, 0, 0, 10, 0, 0, 0 }
+//		{ 0, 0, 0, 0, 0, 20, 30, 40 }
+//		{ 0, 2, 3, 4, 0, 0, 0, 0 }
+//		{ 0, 0, 0, 0, 0, 0, 0, 0 }
+		
+	final static String state4 = "0012";	
+//			{ 1, 2, 0, 0}
+//			{ 0, 0, 10, 0}
+//			{ 0, 0, 0, 20}
+//			{ 0, 0, 0, 0 }
 
 	public static void main(final String[] args) {
 		final List<Integer> historyStates = new ArrayList<>();
@@ -38,7 +39,7 @@ public class MainWithThread {
 		final int moves = 0;
 		System.out.println("Start time:" + new Date());
 
-		BranchThread thread = new BranchThread(GRID, historyStates, (byte) moves, floor);
+		final BranchThread thread = new BranchThread(state4, historyStates, moves, floor);
 		thread.start();
 	}
 

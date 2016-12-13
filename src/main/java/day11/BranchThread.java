@@ -1,23 +1,21 @@
 package day11;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import util.ArrayUtilLocal;
 import util.CollectionLocalUtils;
+import util.StringUtilLocal;
 
 public class BranchThread extends Thread {
 
-	private byte[][] grid;
-	private List<Integer> historyStates;
-	private byte moves;
-	private byte floor;
+	private final String state;
+	private final List<Integer> historyStates;
+	private final int moves;
+	private final int floor;
 
-
-	public BranchThread(final byte[][] grid, final List<Integer> historyStates, final byte moves, final byte floor) {
+	public BranchThread(String state, final List<Integer> historyStates, final int moves, final int floor) {
 		super();
-		this.grid = grid;
+		this.state = state;
 		this.historyStates = historyStates;
 		this.moves = moves;
 		this.floor = floor;
@@ -25,10 +23,11 @@ public class BranchThread extends Thread {
 
 	@Override
 	public void run() {
-		branchSolution(historyStates, grid, moves, floor);
+		branchSolution(historyStates, state, moves, floor);
 	}
 
-	private void branchSolution(final List<Integer> historyStates, final byte[][] grid, final int moves, final byte floor) {
+	private void branchSolution(final List<Integer> historyStates, String state, final int moves,
+			final int floor) {
 		final List<Integer> historyStatesCopy;
 
 		// rule 1: Cut solutions that will be worst than current
@@ -36,129 +35,105 @@ public class BranchThread extends Thread {
 			return;
 		}
 		// rule 2: Cut if was previously in this state
-		final int state = Arrays.deepHashCode(grid);
+		final int stateHash = state.hashCode();
 		if (historyStates.contains(state)) {
 			return;
 		} else {
 			historyStatesCopy = CollectionLocalUtils.cloneList(historyStates);
-			historyStatesCopy.add(state);
+			historyStatesCopy.add(stateHash);
 		}
 		// rule 3: Cut when end condition is met
-		if (isEndState(grid)) {
-			if(moves < MainWithThread.minSolution.get()) {
-				MainWithThread.minSolution .set(moves);;
+		if (isEndState(state)) {
+			if (moves < MainWithThread.minSolution.get()) {
+				MainWithThread.minSolution.set(moves);
 				System.out.println(moves);
 			}
-			if(moves == 7) {
-				System.out.println();
-			}
-
 		}
 
-		final List<Byte[]> permutations = getPermutations(grid[floor], floor);
-
+		final List<Byte[]> permutations = getPermutations(state, floor);
 		for (final Byte[] permutation : permutations) {
-			applyStateChange(grid, permutation, floor);
-			if (isValidConfiguration(grid)) {
-				final byte[][] gridNewState = ArrayUtilLocal.deepCopy(grid);
-				if(moves % MainWithThread.THREAD_POOL == 0) {
-					BranchThread thread = new BranchThread(gridNewState, historyStatesCopy, (byte) (moves + 1), (byte) (floor + permutation[0]));
+
+			final String newState = applyStateChange(state, permutation);
+
+			if (isValidConfiguration(newState)) {
+				if (moves % MainWithThread.THREAD_POOL == 0) {
+					final BranchThread thread = new BranchThread(state, historyStatesCopy, moves,
+							permutation[0]);
 					thread.start();
 				} else {
-					branchSolution(historyStatesCopy, gridNewState, moves + 1, (byte) (floor + permutation[0]));
+					branchSolution(historyStatesCopy, newState, moves + 1, permutation[0]);
 				}
 			}
-			revertStateChange(grid, permutation, floor);
 		}
 
 		return;
 	}
 
-	private void applyStateChange(final byte[][] grid, final Byte[] permutation, final byte floor) {
-		final byte dir = permutation[0];
-		final byte index1 = permutation[1];
-		final byte elem1 = permutation[2];
-		final byte index2 = permutation[3];
-		final byte elem2 = permutation[4];
+	private String applyStateChange(String state, final Byte[] nextMove) {
+		final StringBuilder newState = new StringBuilder(state);
+		final char floorToGo = Byte.toString(nextMove[0]).charAt(0);
+		final byte elem1Pos = nextMove[1];
+		final byte elem2Pos = nextMove[2];
 
-		grid[floor + dir][index1] = elem1;
-		grid[floor][index1] = 0;
-
-		if (index2 != MainWithThread.NONE) {
-			grid[floor + dir][index2] = elem2;
-			grid[floor][index2] = 0;
+		newState.setCharAt(elem1Pos, floorToGo);
+		if (elem2Pos != MainWithThread.NONE) {
+			newState.setCharAt(elem2Pos, floorToGo);
 		}
-	}
 
-	private void revertStateChange(final byte[][] grid, final Byte[] permutation, final byte floor) {
-		final byte dir = permutation[0];
-		final byte index1 = permutation[1];
-		final byte elem1 = permutation[2];
-		final byte index2 = permutation[3];
-		final byte elem2 = permutation[4];
-
-		grid[floor + dir][index1] = 0;
-		grid[floor][index1] = elem1;
-
-		if (index2 != MainWithThread.NONE) {
-			grid[floor + dir][index2] = 0;
-			grid[floor][index2] = elem2;
-		}
+		return newState.toString();
 	}
 
 	/**
 	 * Get combinations of 3 direction, (index1, obj1), (index2,obj2) from all
 	 * existing elements on a given row
 	 */
-	private List<Byte[]> getPermutations(final byte[] row, final byte floor) {
+	private List<Byte[]> getPermutations(String state, final int floor) {
 		final List<Byte[]> result = new ArrayList<>();
+		final List<Byte> elements = new ArrayList<>();
+		final char floorAsChar = StringUtilLocal.getCharDigit(floor);
 
-		for (byte i = 0; i < MainWithThread.WIDTH - 1; i++) {
-			if (row[i] != 0) {
-				assignPermutation(result, floor, i, row[i], MainWithThread.NONE, MainWithThread.NONE);
-				for (byte j = (byte) (i + 1); j < MainWithThread.WIDTH; j++) {
-					if (row[j] != 0) {
-						assignPermutation(result, floor, i, row[i], j, row[j]);
-					}
-				}
+		for (byte i = 0; i < MainWithThread.WIDTH; i++) {
+			if (state.charAt(i) == floorAsChar) {
+				elements.add(i);
 			}
 		}
 
-		java.util.Collections.sort(result, NextMoveComparators.CHIPS_UP);
+		final int size = elements.size();
+
+		for (byte i = 0; i < size - 1; i++) {
+			createPermutation(result, floor, elements.get(i), MainWithThread.NONE);
+
+			for (int j = i + 1; j < size; j++) {
+				createPermutation(result, floor, elements.get(i), elements.get(j));
+			}
+		}
+
+		if (size > 0) {
+			createPermutation(result, floor, elements.get(size - 1), MainWithThread.NONE);
+		}
 
 		return result;
 	}
 
-	private void assignPermutation(final List<Byte[]> result, final byte floor, final byte index1, final byte elem1,
-			final byte index2, final byte elem2) {
-
+	private void createPermutation(List<Byte[]> result, final int floor, final byte elemPos1, byte elemPos2) {
 		if (floor > 0) {
-			result.add(new Byte[] { MainWithThread.DOWN, index1, elem1, index2, elem2 });
+			result.add(new Byte[] { (byte) (floor + MainWithThread.DOWN), elemPos1, elemPos2 });
 		}
 		if (floor < MainWithThread.HEIGHT - 1) {
-			result.add(new Byte[] { MainWithThread.UP, index1, elem1, index2, elem2 });
+			result.add(new Byte[] { (byte) (floor + MainWithThread.UP), elemPos1, elemPos2 });
 		}
 	}
 
-	private boolean isValidConfiguration(final byte[][] grid) {
-		for (int i = 0; i < MainWithThread.HEIGHT; i++) {
+	private boolean isValidConfiguration(final String state) {
+		final byte count = MainWithThread.PAIRS;
 
-			final List<Byte> chips = new ArrayList<>();
-			final List<Byte> generators = new ArrayList<>();
-
-			for (int j = 0; j < MainWithThread.WIDTH; j++) {
-				final byte current = grid[i][j];
-				if (current != 0 && current < 10) {
-					chips.add(grid[i][j]);
-				}
-				if (current >= 10) {
-					generators.add(grid[i][j]);
-				}
-			}
-
-			if (!chips.isEmpty() && !generators.isEmpty()) {
-				for (final byte chip : chips) {
-					if (!generators.contains((byte) (chip * 10))) {
+		for (byte i = 0; i < count; i++) {
+			final char chipFloor = state.charAt(i);
+			if (chipFloor == state.charAt(i + count)) {
+				continue;
+			} else {
+				for (byte j = count; j < count * 2; j++) {
+					if (chipFloor == state.charAt(j)) {
 						return false;
 					}
 				}
@@ -168,9 +143,9 @@ public class BranchThread extends Thread {
 		return true;
 	}
 
-	private boolean isEndState(final byte[][] grid) {
+	private boolean isEndState(final String state) {
 		for (int i = 0; i < MainWithThread.WIDTH; i++) {
-			if (grid[MainWithThread.HEIGHT-1][i] == 0) {
+			if (state.charAt(i) != '3') {
 				return false;
 			}
 		}
