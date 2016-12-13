@@ -1,6 +1,7 @@
 package day11;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import util.CollectionLocalUtils;
@@ -9,16 +10,18 @@ import util.StringUtilLocal;
 public class Main {
 
 	static int HEIGHT = 4;
-	static byte PAIRS = 5;
+	static byte PAIRS = 2;
 	static int WIDTH = PAIRS * 2;
 
 	static byte NONE = -100;
 	static byte UP = 1;
 	static byte DOWN = -1;
 
-	static byte MAX_MOVES = 20;
+	static byte MAX_MOVES = 50;
 
 	static Integer minSolution = Integer.MAX_VALUE;
+
+	final static String state14 = "00022220001111";
 
 	final static String state10 = "0222201111";
 	// { 1, 0, 0, 0, 10, 0, 0, 0 }
@@ -37,7 +40,9 @@ public class Main {
 		final byte floor = 0;
 		final int moves = 0;
 
-		branchSolution(historyStates, state10, moves, floor);
+		System.out.println("Start time:" + new Date(System.currentTimeMillis()));
+		branchSolution(historyStates, state4, moves, floor);
+		System.out.println("End time:" + new Date(System.currentTimeMillis()));
 
 		System.out.println(minSolution);
 	}
@@ -51,7 +56,7 @@ public class Main {
 			return;
 		}
 		// rule 2: Cut if was previously in this state
-		final int stateHash = state.hashCode();
+		final int stateHash = getStateHash(state);
 		if (historyStates.contains(state)) {
 			return;
 		} else {
@@ -113,7 +118,10 @@ public class Main {
 			createPermutation(result, floor, elements.get(i), NONE);
 
 			for (int j = i + 1; j < size; j++) {
-				createPermutation(result, floor, elements.get(i), elements.get(j));
+				if (validPair(result, i, j)) {
+					createPermutation(result, floor, elements.get(i), elements.get(j));
+				}
+
 			}
 		}
 
@@ -121,16 +129,18 @@ public class Main {
 			createPermutation(result, floor, elements.get(size - 1), NONE);
 		}
 
+		//Collections.sort(result, new PermutationComparator());
+
 		return result;
 	}
 
 	private static void createPermutation(List<Byte[]> result, final int floor, final byte elemPos1,
 			byte elemPos2) {
 		if (floor > 0) {
-			result.add(new Byte[] { (byte) (floor + DOWN), elemPos1, elemPos2 });
+			result.add(new Byte[] { (byte) (floor + DOWN), elemPos1, elemPos2, DOWN });
 		}
 		if (floor < HEIGHT - 1) {
-			result.add(new Byte[] { (byte) (floor + UP), elemPos1, elemPos2 });
+			result.add(new Byte[] { (byte) (floor + UP), elemPos1, elemPos2, UP });
 		}
 	}
 
@@ -161,6 +171,40 @@ public class Main {
 		}
 
 		return true;
+	}
+
+	private static int getStateHash(String state) {
+		final List<String> pairs = new ArrayList<>();
+
+		for (int i = 0; i < PAIRS - 1; i += 2) {
+			pairs.add(state.substring(i, i + PAIRS));
+		}
+
+		return pairs.hashCode();
+	}
+
+	private static boolean validPair(List<Byte[]> permutations, int index1, int index2) {
+		if (isGMPair(index1, index2) && !isG1M1Pair(index1, index2)) {
+			return false;
+		}
+
+		for (final Byte[] perm : permutations) {
+			final int pos1 = perm[1];
+			final int pos2 = perm[2];
+			if (pos2 != NONE && isG1M1Pair(pos1, pos2)) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	private static boolean isG1M1Pair(int index1, int index2) {
+		return index1 < PAIRS && index2 >= PAIRS || index1 >= PAIRS && index2 < PAIRS;
+	}
+
+	private static boolean isGMPair(int index1, int index2) {
+		return index1 + PAIRS == index2 || index2 + PAIRS == index1;
 	}
 
 }

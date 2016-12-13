@@ -57,7 +57,7 @@ public class BranchThread extends Thread {
 
 			if (isValidConfiguration(newState)) {
 				if (moves % MainWithThread.THREAD_POOL == 0) {
-					final BranchThread thread = new BranchThread(state, historyStatesCopy, moves,
+					final BranchThread thread = new BranchThread(state, historyStatesCopy, moves + 1,
 							permutation[0]);
 					thread.start();
 				} else {

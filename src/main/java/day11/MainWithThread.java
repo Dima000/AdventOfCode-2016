@@ -16,7 +16,7 @@ public class MainWithThread {
 	static byte UP = 1;
 	static byte DOWN = -1;
 
-	static byte THREAD_POOL = 7;
+	static byte THREAD_POOL = 10;
 	static byte MAX_MOVES = 12;
 
 	static AtomicInteger minSolution = new AtomicInteger(Integer.MAX_VALUE);
@@ -37,6 +37,7 @@ public class MainWithThread {
 		final List<Integer> historyStates = new ArrayList<>();
 		final byte floor = 0;
 		final int moves = 0;
+		
 		System.out.println("Start time:" + new Date());
 
 		final BranchThread thread = new BranchThread(state4, historyStates, moves, floor);
